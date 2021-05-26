@@ -38,7 +38,6 @@ function AvailableItems() {
   return(
     <div>
       <h2>Available Items</h2>
-      <pre>{JSON.stringify(cart, null, 2)}</pre>
       <ul>
         {
           Object.entries(inventory).map(([id, { name, price }]) => (
@@ -68,6 +67,31 @@ function Cart() {
   return(
     <div>
       <h2>Cart</h2>
+      <CartItems />
+      <Shipping />
+    </div>
+  );
+}
+
+function CartItems() {
+  const cart = useRecoilValue(cartState);
+
+  if (Object.keys(cart).length === 0) return <p>No items here!!!</p>;
+
+  return (
+    <ul>
+      {Object.entries(cart).map(([id, quantity]) => <li key={id}>{inventory[id].name} x {quantity}</li>)}
+    </ul>
+  );
+}
+
+function Shipping() {
+  return(
+    <div>
+      {
+        Object.entries(destinations)
+          .map(([country, price]) => <button>{country} @ {price}</button>)
+      }
     </div>
   );
 }
