@@ -23,6 +23,11 @@ const cartState = atom({
   default: {}
 });
 
+const shippingState = atom({
+  key: 'shippingState',
+  default: 'WST'
+});
+
 function App() {
   return (
     <RecoilRoot>
@@ -86,11 +91,21 @@ function CartItems() {
 }
 
 function Shipping() {
+  const [shipping, setShipping] = useRecoilState(shippingState);
+
   return(
     <div>
+      <h2>Shipping</h2>
       {
         Object.entries(destinations)
-          .map(([country, price]) => <button>{country} @ {price}</button>)
+          .map(([country, price]) => (
+            <button onClick={() => {
+              setShipping(country);
+            }}>
+              {country} @ {price}
+              {country === shipping ? <span> ✅ </span> : ''}
+            </button>
+          ))
       }
     </div>
   );
