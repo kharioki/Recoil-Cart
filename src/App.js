@@ -74,6 +74,7 @@ function Cart() {
       <h2>Cart</h2>
       <CartItems />
       <Shipping />
+      <Totals />
     </div>
   );
 }
@@ -107,6 +108,40 @@ function Shipping() {
             </button>
           ))
       }
+    </div>
+  );
+}
+
+const totalsState = selector({
+  key: 'totalsState',
+  get: ({ get }) => {
+    const cart = get(cartState);
+    const shipping = get(shippingState);
+
+    const subtotal = Object
+      .entries(cart)
+      .reduce((acc, [id, quantity]) => {
+        return acc + (inventory[id].price * quantity)
+      }, 0)
+    const shippingTotal = destinations[shipping];
+
+    return {
+      subtotal,
+      shipping: shippingTotal,
+      total: subtotal + shippingTotal
+    }
+  }
+});
+
+function Totals() {
+  const totals = useRecoilValue(totalsState);
+
+  return (
+    <div>
+      <h2>Totals</h2>
+      <p>Subtotal: ${totals.subtotal.toFixed(2)}</p>
+      <p>Shipping: ${totals.shipping.toFixed(2)}</p>
+      <p><strong>Total: ${totals.total.toFixed(2)}</strong></p>
     </div>
   );
 }
